@@ -5,17 +5,6 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
 import { useSidebarStore } from "@/store/use-sidebar-store";
 
-/**
- * Layout del Dashboard con persistencia en localStorage
- *
- * MIGRADO de cookies a localStorage para:
- * - ✅ Evitar problemas legales (GDPR/CCPA)
- * - ✅ Mejor performance (sin overhead en requests)
- * - ✅ Más simple y mantenible
- *
- * Usa Zustand con persist middleware que guarda en localStorage.
- * El mounted state evita hydration mismatches entre servidor y cliente.
- */
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { isCollapsed, setCollapsed } = useSidebarStore();
   const [mounted, setMounted] = useState(false);

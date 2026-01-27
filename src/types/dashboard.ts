@@ -1,7 +1,3 @@
-/**
- * Tipos para el Dashboard
- */
-
 export interface NavItem {
   title: string;
   href: string;

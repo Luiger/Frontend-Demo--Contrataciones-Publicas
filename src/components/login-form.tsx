@@ -55,8 +55,6 @@ export function LoginForm() {
     setAlertState({ type: null, message: "" });
 
     try {
-      // Simulación de llamada a API (por ahora)
-      // Aquí irá la lógica de autenticación con el backend
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // Simulación de respuesta exitosa
