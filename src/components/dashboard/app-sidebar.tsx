@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -38,10 +37,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-/**
- * Configuración de navegación del sidebar
- * Puedes modificar esto según las rutas de tu aplicación
- */
 const navigationGroups: NavGroup[] = [
   {
     title: "Principal",
@@ -86,10 +81,6 @@ const navigationGroups: NavGroup[] = [
   },
 ];
 
-/**
- * Datos del usuario (temporal)
- * Esto vendrá de tu backend/auth state cuando conectes el API
- */
 const mockUser = {
   name: "Usuario Demo",
   email: "usuario@demo.com",
