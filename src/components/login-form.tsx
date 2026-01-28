@@ -24,7 +24,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, Eye, EyeOff } from "lucide-react";
+import { useAuthStore } from "@/store/useAuthStore";
 
 // Esquema de validación con Zod
 const loginSchema = z.object({
@@ -36,11 +37,8 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const [alertState, setAlertState] = useState<{
-    type: "error" | "success" | null;
-    message: string;
-  }>({ type: null, message: "" });
+  const { login, isLoading, error: authError } = useAuthStore();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -49,31 +47,18 @@ export function LoginForm() {
       password: "",
     },
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data: LoginFormValues) => {
-    setIsLoading(true);
-    setAlertState({ type: null, message: "" });
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Simulación de respuesta exitosa
-      console.log("Login data:", data);
-
-      setAlertState({
-        type: "success",
-        message: "¡Inicio de sesión exitoso! Redirigiendo...",
-      });
-
+    setSuccessMessage(null);
+    const success = await login(data);
+    if (success) {
+      setSuccessMessage("¡Inicio de sesión exitoso! Redirigiendo...");
       // Redirigir a la página de inicio del dashboard
       router.replace("/inicio");
-    } catch (error) {
-      setAlertState({
-        type: "error",
-        message: "Error al iniciar sesión. Por favor verifica tus credenciales.",
-      });
-    } finally {
-      setIsLoading(false);
+    } else {
+      // El error ya está en el store (authError), no necesitamos hacer nada más aquí
+      console.log("Login failed");
     }
   };
 
@@ -89,21 +74,21 @@ export function LoginForm() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {/* Alert para mostrar errores o éxito */}
-            {alertState.type && (
+            {(authError || successMessage) && (
               <Alert
-                variant={alertState.type === "error" ? "destructive" : "default"}
+                variant={authError ? "destructive" : "default"}
                 className={
-                  alertState.type === "success"
+                  successMessage
                     ? "border-green-500 bg-green-50 text-green-900 dark:bg-green-950 dark:text-green-100"
                     : ""
                 }
               >
-                {alertState.type === "error" ? (
+                {authError ? (
                   <AlertCircle className="h-4 w-4" />
                 ) : (
                   <CheckCircle2 className="h-4 w-4" />
                 )}
-                <AlertDescription>{alertState.message}</AlertDescription>
+                <AlertDescription>{authError || successMessage}</AlertDescription>
               </Alert>
             )}
 
@@ -135,7 +120,30 @@ export function LoginForm() {
                 <FormItem>
                   <FormLabel>Contraseña</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} />
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        {...field}
+                        disabled={isLoading}
+                        className="pr-10" // Espacio para el icono
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none"
+                        tabIndex={-1} // Evitar foco al navegar con tab
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5" />
+                        ) : (
+                          <Eye className="h-5 w-5" />
+                        )}
+                        <span className="sr-only">
+                          {showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                        </span>
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -143,7 +151,7 @@ export function LoginForm() {
             />
 
             {/* Botón de Submit */}
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
