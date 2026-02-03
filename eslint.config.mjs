@@ -19,7 +19,7 @@ const eslintConfig = defineConfig([
       // Desactiva la regla que prohíbe 'require()'
       "@typescript-eslint/no-require-imports": "off",
       // Desactiva la regla que prohíbe 'module.exports'
-      "@typescript-eslint/no-var-requires": "off"
+      "@typescript-eslint/no-var-requires": "off",
     },
   },
   // Override default ignores of eslint-config-next.
