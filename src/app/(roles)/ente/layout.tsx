@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { DashboardLayout } from "@/components/layouts/DashboardLayout";
+import { ROLES } from "@/types/role.types";
 
 export const metadata: Metadata = {
   title: "Ente | Dashboard",
@@ -6,9 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function EnteLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div data-role="ente" className="min-h-screen">
-      {children}
-    </div>
-  );
+  return <DashboardLayout role={ROLES.ENTE}>{children}</DashboardLayout>;
 }
