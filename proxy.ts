@@ -7,23 +7,16 @@ import { isPublicRoute, isRouteAllowedForRole } from "@/lib/constants/routes";
 /**
  * Proxy de Next.js 16 - Guardian del servidor
  * Protege todas las rutas y valida permisos por rol
- *
- * IMPORTANTE: En Next.js 16:
- * - El archivo se llama proxy.ts (antes middleware.ts)
- * - La función se llama proxy (antes middleware)
- * - Solo soporta Node.js runtime (edge runtime NO soportado)
- *
- * Ver: https://nextjs.org/docs/app/guides/upgrading/version-16#middleware-to-proxy
  */
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Permitir rutas públicas
+  // Permitir rutas públicas
   if (isPublicRoute(pathname)) {
     return NextResponse.next();
   }
 
-  // 2. Obtener token de la cookie
+  // Obtener token de la cookie
   const sessionCookie = request.cookies.get(SESSION_CONSTANTS.COOKIE_NAME);
 
   if (!sessionCookie?.value) {
@@ -31,7 +24,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // 3. Verificar y validar el token
+  // Verificar y validar el token
   const session = await verifySession(sessionCookie.value);
 
   if (!session) {
@@ -41,7 +34,7 @@ export async function proxy(request: NextRequest) {
     return response;
   }
 
-  // 4. Verificar si la ruta está permitida para el rol del usuario
+  // Verificar si la ruta está permitida para el rol del usuario
   if (!isRouteAllowedForRole(pathname, session.role)) {
     // Usuario intentando acceder a ruta de otro rol
     // Redirigir a su dashboard correspondiente
@@ -49,7 +42,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL(dashboardRoute, request.url));
   }
 
-  // 5. Todo OK, permitir acceso
+  // Todo OK, permitir acceso
   return NextResponse.next();
 }
 
