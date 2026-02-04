@@ -14,7 +14,7 @@ export function LogoutButton() {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon" onClick={handleLogout}>
+          <Button variant="ghost" size="icon" onClick={handleLogout} className="cursor-pointer">
             <LogOut className="h-5 w-5" />
           </Button>
         </TooltipTrigger>
