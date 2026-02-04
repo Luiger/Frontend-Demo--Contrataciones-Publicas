@@ -33,9 +33,9 @@ export function Header({
         {/* Logo y título del rol */}
         <div className="flex items-center gap-3">
           <div
-            className="h-10 w-10 rounded-lg bg-linear-to-br from-primary to-primary/50 flex items-center justify-center text-primary-foreground font-bold"
+            className="h-10 w-10 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-sm"
             style={{
-              background: `linear-gradient(135deg, oklch(var(--${roleConfig.cssVar})), oklch(var(--${roleConfig.cssVar}) / 0.7))`,
+              background: `linear-gradient(135deg, var(--${roleConfig.cssVar}), color-mix(in oklch, var(--${roleConfig.cssVar}), transparent 30%))`,
             }}
           >
             {roleConfig.name.charAt(0)}
